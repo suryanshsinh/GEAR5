@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1c1c1c; /* Dark background color */
+            color: #fff; /* Light text color */
+        }
+
+        header {
+            background-color: #282828;
+            padding: 10px;
+            text-align: center;
+            position: relative;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .tabs button {
+            background-color: #282828;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 10px;
+            transition: background-color 0.3s ease-out;
+        }
+
+        .tabs button.active {
+            background-color: #6ba825;
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin-top: 50px; /* Margin on top of the board */
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Set the width of each cell */
+            grid-auto-rows: minmax(0, 1fr); /* Set the height of each cell to a flexible value */
+            gap: 10px;
+            max-width: 300px;
+            width: 100%;
+            margin: 20px; /* Margin around the board */
+        }
+
+        .cell {
+            background-color: #2d2d2d; /* Darker background color for game cells */
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 0;
+            aspect-ratio: 1/1; /* Maintain square shape */
+            cursor: pointer;
+            transition: background-color 0.2s ease-out;
+        }
+
+        .cell-content {
+            height: 100%; /* Ensure content takes full height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px; /* Increased font size */
+            font-weight: bold; /* Make the text bold */
+            user-select: none; /* Disable text selection */
+        }
+
+        .cell:hover {
+            background-color: #404040; /* Darker background color on hover */
+        }
+
+        #result {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        #restart-btn {
+            background-color: #6ba825;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease-out;
+            display: none;
+            border-bottom: 0px solid #57891b;
+            transition: border-bottom 0.2s ease-out;
+        }
+
+        #restart-btn:hover {
+            border-bottom: 3px solid #57891b;
+            transition: border-bottom 0.2s ease-out;
+        }
+
+        @media (max-width: 768px) {
+            .cell {
+                aspect-ratio: 1/1; /* Maintain square shape on mobile */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Tic Tac Toe</h1>
+        <div class="tabs">
+            <button id="userVsUserTab" class="active" onclick="switchMode('userVsUser')">User vs User</button>
+            <button id="userVsComputerTab" onclick="switchMode('userVsComputer')">User vs Computer</button>
+        </div>
+    </header>
+
+    <main>
+        <div id="game-board"></div>
+        <div id="result"></div>
+        <button id="restart-btn" onclick="restartGame()">Restart Game</button>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            initializeGame();
+            switchMode('userVsUser'); // Set default mode
+        });
+    
+        let gameMode = 'userVsUser'; // Default mode
+        let isComputerTurn = false; // Track if it's the computer's turn
+
+        function switchMode(mode) {
+            const userVsUserTab = document.getElementById('userVsUserTab');
+            const userVsComputerTab = document.getElementById('userVsComputerTab');
+
+            userVsUserTab.classList.remove('active');
+            userVsComputerTab.classList.remove('active');
+
+            if (mode === 'userVsUser') {
+                userVsUserTab.classList.add('active');
+            } else {
+                userVsComputerTab.classList.add('active');
+            }
+
+            gameMode = mode;
+            restartGame(); // Restart the game when switching modes
+        }
+
+        function initializeGame() {
+            const board = document.getElementById("game-board");
+            const resultDisplay = document.getElementById("result");
+            const restartBtn = document.getElementById("restart-btn");
+            const cells = Array.from({ length: 9 }, (_, index) => createCell(index));
+            let currentPlayer = "X";
+            let gameEnded = false;
+
+            cells.forEach(cell => board.appendChild(cell));
+
+            function createCell(index) {
+                const cell = document.createElement("div");
+                cell.classList.add("cell");
+                const cellContent = document.createElement("div");
+                cellContent.classList.add("cell-content");
+                cell.appendChild(cellContent);
+                cell.dataset.index = index;
+                cell.addEventListener("click", () => handleCellClick(cell));
+                return cell;
+            }
+
+            function handleCellClick(cell) {
+                if (!cell.textContent && !gameEnded && !isComputerTurn) {
+                    cell.querySelector('.cell-content').textContent = currentPlayer;
+                    checkWinner();
+                    currentPlayer = currentPlayer === "X" ? "O" : "X";
+
+                    // Disable click events during the computer's turn
+                    if (gameMode === 'userVsComputer' && currentPlayer === 'O' && !gameEnded) {
+                        isComputerTurn = true; // Set it to true before simulating the computer move
+                        disableCellClicks();
+                        setTimeout(() => {
+                            simulateComputerMove();
+                            isComputerTurn = false; // Set it back to false after the computer move
+                            enableCellClicks();
+                        }, 500); // Delay for a more natural feel
+                    }
+                }
+            }
+
+            function disableCellClicks() {
+                cells.forEach(cell => cell.removeEventListener("click", handleCellClick));
+            }
+
+            function enableCellClicks() {
+                cells.forEach(cell => {
+                    if (!cell.textContent) {
+                        cell.addEventListener("click", () => handleCellClick(cell));
+                    }
+                });
+            }
+
+            function simulateComputerMove() {
+                const emptyCells = cells.filter(cell => cell.querySelector('.cell-content').textContent === "");
+            
+                // Check for a winning move
+                for (const cell of emptyCells) {
+                    cell.querySelector('.cell-content').textContent = currentPlayer;
+                    if (checkWinner()) {
+                        currentPlayer = currentPlayer === "X" ? "O" : "X";
+                        setTimeout(() => {
+                            checkWinner(); // Delay the final check for a winner to allow the user to make the final move
+                        }, 500);
+                        return;
+                    }
+                    cell.querySelector('.cell-content').textContent = ""; // Reset the cell if it's not a winning move
+                }
+            
+                // Check for blocking the user's winning move
+                currentPlayer = currentPlayer === "X" ? "O" : "X"; // Switch to the user's sign
+                for (const cell of emptyCells) {
+                    const originalContent = cell.querySelector('.cell-content').textContent;
+                    cell.querySelector('.cell-content').textContent = "O"; // Always set "O" for blocking
+                    if (checkWinner()) {
+                        cell.querySelector('.cell-content').textContent = originalContent; // Reset the cell
+                        currentPlayer = currentPlayer === "X" ? "O" : "X";
+                        setTimeout(() => {
+                            checkWinner(); // Delay the final check for a winner to allow the user to make the final move
+                        }, 500);
+                        return;
+                    }
+                    cell.querySelector('.cell-content').textContent = originalContent; // Reset the cell
+                }
+                currentPlayer = currentPlayer === "X" ? "O" : "X"; // Switch back to the computer's sign
+            
+                // Make a strategic move
+                const strategicMoves = [0, 2, 6, 8]; // Corners
+                const strategicEmptyCells = emptyCells.filter(cell => strategicMoves.includes(Number(cell.dataset.index)));
+                if (strategicEmptyCells.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * strategicEmptyCells.length);
+                    const computerCell = strategicEmptyCells[randomIndex];
+                    computerCell.querySelector('.cell-content').textContent = currentPlayer;
+                    currentPlayer = currentPlayer === "X" ? "O" : "X";
+                    return;
+                }
+            
+                // If no strategic moves, make a random move
+                const randomIndex = Math.floor(Math.random() * emptyCells.length);
+                const computerCell = emptyCells[randomIndex];
+                computerCell.querySelector('.cell-content').textContent = currentPlayer;
+                currentPlayer = currentPlayer === "X" ? "O" : "X";
+            }
+            
+
+            function checkWinner() {
+                const rows = getRows();
+                const columns = getColumns();
+                const diagonals = getDiagonals();
+
+                const allLines = [...rows, ...columns, ...diagonals];
+
+                for (const line of allLines) {
+                    if (line.every(cell => cell.textContent === "X")) {
+                        showResult("X wins!");
+                        return true;
+                    }
+                    if (line.every(cell => cell.textContent === "O")) {
+                        showResult("O wins!");
+                        return true;
+                    }
+                }
+
+                if (allCellsFilled()) {
+                    showResult("It's a draw!");
+                }
+
+                return false;
+            }
+
+            function getRows() {
+                return [
+                    [getCell(0), getCell(1), getCell(2)],
+                    [getCell(3), getCell(4), getCell(5)],
+                    [getCell(6), getCell(7), getCell(8)],
+                ];
+            }
+
+            function getColumns() {
+                return [
+                    [getCell(0), getCell(3), getCell(6)],
+                    [getCell(1), getCell(4), getCell(7)],
+                    [getCell(2), getCell(5), getCell(8)],
+                ];
+            }
+
+            function getDiagonals() {
+                return [
+                    [getCell(0), getCell(4), getCell(8)],
+                    [getCell(2), getCell(4), getCell(6)],
+                ];
+            }
+
+            function getCell(index) {
+                return document.querySelector(`[data-index="${index}"] .cell-content`);
+            }
+
+            function allCellsFilled() {
+                return cells.every(cell => cell.textContent !== "");
+            }
+
+            function showResult(result) {
+                gameEnded = true;
+                resultDisplay.textContent = result;
+                restartBtn.style.display = "block";
+            }
+        }
+
+        function restartGame() {
+            const board = document.getElementById("game-board");
+            const resultDisplay = document.getElementById("result");
+            const restartBtn = document.getElementById("restart-btn");
+
+            // Clear the board
+            board.innerHTML = "";
+
+            // Reset the result display
+            resultDisplay.textContent = "";
+
+            // Hide the restart button
+            restartBtn.style.display = "none";
+
+            // Reinitialize the game
+            initializeGame();
+        }
+    </script>
+</body>
+
+</html>

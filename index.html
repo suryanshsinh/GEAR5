@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games Page</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+    
+    <div class="overlay" onclick="toggleMenu()">&nbsp;</div>
+    <div class="menu-btn-container" onclick="toggleMenu()">
+        <div class="menu-btn"></div>
+    </div>
+
+    <header>
+        <h1>Lonewoof</h1>
+    </header>
+    <div class="openedMenu">
+        <div class="menu">
+            <a href="#" style="margin-top: 90px;">Menu Item 1</a>
+            <a href="#">Menu Item 2</a>
+            <a href="#">Menu Item 3</a>
+            <a href="#" style="margin-top: auto;">Bot Item 1</a>
+            <a href="#" style="margin-bottom: 23px;">Bot Item 2</a>
+        </div>
+    </div>
+    <main>
+        <a href="/tictactoe">
+            <div class="game-block">
+                <img class="game-thumbnail" src="/images/tictactoe.png" alt="Game 1 Thumbnail">
+            </div>
+        </a>
+        <a href="/2048">
+            <div class="game-block">
+                <img class="game-thumbnail" src="/images/2048.png" alt="Game 2 Thumbnail">
+            </div>
+        </a>
+        <a href="/wordle">
+            <div class="game-block">
+                <img class="game-thumbnail" src="/images/2048.png" alt="Game 2 Thumbnail">
+            </div>
+        </a>
+    </main>
+    <script src="scripts.js"></script>
+</body>
+</html>

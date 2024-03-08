@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <section>
+        <div class="game-boxes">
+            <div class="game-box"></div>
+            <div class="game-box"></div>
+            <div class="game-box"></div>
+            <div class="game-box"></div>
+            <div class="game-box"></div>
+            <div class="game-box"></div>
+        </div>
+        <div class="overlay"></div>
+        <div class="error-box"></div>
+        <div class="change">
+            <div class="change-box" onclick="newPage('-')">-</div>
+            <div class="change-box" onclick="newPage('+')">+</div>
+        </div>
+        <div class="start">
+            <div class="start-box" onclick="startGame()">START</div>
+        </div>
+        <div class="keyboard">
+            <div class="row row1">
+                <div class="letter" id="Q" onclick="enterLetter('Q')">Q</div>
+                <div class="letter" id="W" onclick="enterLetter('W')">W</div>
+                <div class="letter" id="E" onclick="enterLetter('E')">E</div>
+                <div class="letter" id="R" onclick="enterLetter('R')">R</div>
+                <div class="letter" id="T" onclick="enterLetter('T')">T</div>
+                <div class="letter" id="Y" onclick="enterLetter('Y')">Y</div>
+                <div class="letter" id="U" onclick="enterLetter('U')">U</div>
+                <div class="letter" id="I" onclick="enterLetter('I')">I</div>
+                <div class="letter" id="O" onclick="enterLetter('O')">O</div>
+                <div class="letter" id="P" onclick="enterLetter('P')">P</div>
+            </div>
+            <div class="row row2">
+                <div class="letter" id="A" onclick="enterLetter('A')">A</div>
+                <div class="letter" id="S" onclick="enterLetter('S')">S</div>
+                <div class="letter" id="D" onclick="enterLetter('D')">D</div>
+                <div class="letter" id="F" onclick="enterLetter('F')">F</div>
+                <div class="letter" id="G" onclick="enterLetter('G')">G</div>
+                <div class="letter" id="H" onclick="enterLetter('H')">H</div>
+                <div class="letter" id="J" onclick="enterLetter('J')">J</div>
+                <div class="letter" id="K" onclick="enterLetter('K')">K</div>
+                <div class="letter" id="L" onclick="enterLetter('L')">L</div>
+            </div>
+            <div class="row row3">
+                <div class="letter" onclick="enterLetter('BACKSPACE')"><<</div>
+                <div class="letter" id="Z" onclick="enterLetter('Z')">Z</div>
+                <div class="letter" id="X" onclick="enterLetter('X')">X</div>
+                <div class="letter" id="C" onclick="enterLetter('C')">C</div>
+                <div class="letter" id="V" onclick="enterLetter('V')">V</div>
+                <div class="letter" id="B" onclick="enterLetter('B')">B</div>
+                <div class="letter" id="N" onclick="enterLetter('N')">N</div>
+                <div class="letter" id="M" onclick="enterLetter('M')">M</div>
+                <div class="letter" onclick="enterLetter('ENTER')">Enter</div>
+            </div>
+        </div>
+    </section>
+    <script src="./scripts.js"></script>
+</body>
+</html>
