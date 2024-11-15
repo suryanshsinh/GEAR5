@@ -12,10 +12,7 @@ document.querySelector(`.change-box:nth-child(${1})`).style.backgroundColor = `#
 document.querySelector(`.change-box:nth-child(${1})`).style.cursor = `default`;
 
 function getSecretWords() {
-    const request = new XMLHttpRequest();
-    request.open("POST", "./api.php", false);
-    request.send(null);
-    return request.responseText.split(" ");
+    return "let post audio heaven request contrast".split(" ")
 }
 let secretWords = getSecretWords();
 
@@ -98,11 +95,9 @@ function newPage(s) {
     }
 }
 
-function checkWord(word) {
-    const request = new XMLHttpRequest();
-    request.open("GET", "./api.php?word="+word, false);
-    request.send(null);
-    return request.responseText;
+async function checkWord(word) {
+    let res = await fetch("https://api.lessgames.com/wordless/validate/" + word).then(x => x.json())
+    return await res.exists;
 }
 
 function displayWord() {
@@ -164,7 +159,7 @@ function applyPopEffect(divId, key, push = true) {
     }, 100);
 }
 
-function enterLetter(key) {
+async function enterLetter(key) {
     if (letters.includes(key) && word_array.length < n) {
         applyPopEffect(`.letter-box:nth-child(${word_array.length + 1})`, key);
     }
@@ -193,7 +188,7 @@ function enterLetter(key) {
         }
 
         else {
-            if (checkWord(word) === "{\"exists\":true}") {
+            if (await checkWord(word)) {
                 if (today === word) {
                     game = 0;
                     var divElements = game_box.querySelectorAll('.letter-box');
