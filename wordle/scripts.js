@@ -12,7 +12,7 @@ document.querySelector(`.change-box:nth-child(${1})`).style.backgroundColor = `#
 document.querySelector(`.change-box:nth-child(${1})`).style.cursor = `default`;
 
 function getSecretWords() {
-    return "let post audio heaven request contrast".split(" ")
+    return "let post audio heaven request contrast".split(" ");
 }
 let secretWords = getSecretWords();
 
